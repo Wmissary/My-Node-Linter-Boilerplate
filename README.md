@@ -10,8 +10,10 @@ Work in progress...
 
 ## Features
 
-- Add Eslint and plugins to package.json
-- Create configuration file for Eslint and plugins
+- Install Eslint and plugins.
+- Uninstall Eslint and plugins.
+- Create configuration file for Eslint and plugins.
+- Delete configuration file for Eslint and plugins.
 
 ## Installation
 
@@ -19,18 +21,27 @@ Work in progress...
 
 ## CLI Usage
 
-Start:
+Install:
 
 ```bash
-mylinter init
+mylinter install
+```
+
+```bash
+mylinter uninstall
 ```
 
 Or you can visit our CLI documentation for more information.
 
 ## Roadmap
 
-- [ ] Modify package.json
-- [ ] Add configuration file.
+- [x] Install & uninstall dependencies logic.
+- [ ] Add configuration file logic.
+- [ ] CLI.
+- [ ] Documentation.
+- [ ] Optimize test.
+- [ ] Optimize installation logic.
+- [ ] Optimize configuration logic.
 
 ## Contact
 
