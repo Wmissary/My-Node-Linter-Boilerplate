@@ -1,6 +1,8 @@
 // eslint-disable-next-line node/no-missing-import
 import test from "node:test";
 import assert from "node:assert";
+import * as url from "node:url";
+import Path from "node:path";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
@@ -8,7 +10,7 @@ const packageData = require("./playground/package.json");
 
 import { linter } from "../src/linter.js";
 
-test("Should install & uninstall linter and plugins", (t) => {
+test("Should install & uninstall linter and plugins", async (t) => {
   const dependencies = [
     "eslint",
     "eslint-plugin-node",
@@ -19,52 +21,36 @@ test("Should install & uninstall linter and plugins", (t) => {
 
   const fileNotFoundError = "Couldn't find package.json";
 
-  const alreadyInstalledError = "Linter & plugins already installed";
+  const dirname = url.fileURLToPath(new URL(".", import.meta.url));
 
-  const dependenciesNotFoundError =
-    "Couldn't find linter & plugins dependencies";
+  const path = Path.join(dirname, "playground", "package.json");
 
-  const path = "./playground/";
+  const errorPath = Path.join(dirname, "package.json");
 
-  t.test("should throw error if package.json is not found", () => {
+  await t.test("should throw error if package.json is not found", async () => {
     try {
-      linter.install(dependencies, path);
+      await linter.install(dependencies, errorPath);
+      assert.strictEqual(1, 2);
     } catch (error) {
       assert.strictEqual(error.message, fileNotFoundError);
     }
   });
 
-  t.test("should install linter and plugins", () => {
-    linter.install(dependencies, path);
+  await t.test("should install linter and plugins", async () => {
+    await linter.install(dependencies, path);
     assert.strictEqual(packageData.dependencies, dependencies);
   });
 
-  t.test("should throw error if linter & plugins is already installed", () => {
+  await t.test("should throw error if package.json is not found", async () => {
     try {
-      linter.install(dependencies, path);
-    } catch (error) {
-      assert.strictEqual(error, alreadyInstalledError);
-    }
-  });
-
-  t.test("should uninstall linter and plugins", () => {
-    linter.uninstall(dependencies, path);
-    assert.strictEqual(packageData.dependencies, dependencies);
-  });
-
-  t.test("should throw error if package.json is not found", () => {
-    try {
-      linter.uninstall(dependencies, path);
+      await linter.uninstall(dependencies, errorPath);
     } catch (error) {
       assert.strictEqual(error.message, fileNotFoundError);
     }
   });
 
-  t.test("should throw error if linter and plugins are not found", () => {
-    try {
-      linter.uninstall(dependencies, path);
-    } catch (error) {
-      assert.strictEqual(error.message, dependenciesNotFoundError);
-    }
+  await t.test("should uninstall linter and plugins", async () => {
+    await linter.uninstall(dependencies, path);
+    assert.strictEqual(packageData.dependencies, dependencies);
   });
 });
