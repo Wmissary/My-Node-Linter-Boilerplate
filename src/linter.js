@@ -10,7 +10,15 @@ import {
 
 const kPackageJSON = "package.json";
 
+/**
+ * @typedef {Object} linter
+ */
 export const linter = {
+  /**
+   * Check if package.json exist, install dependencies
+   * @param {Array<string>} dependencies - Dependencies you want to install
+   * @param {Path} path - Path to package.json
+   */
   install: async function (dependencies, path) {
     const file = Path.join(path, kPackageJSON);
 
@@ -19,7 +27,11 @@ export const linter = {
     }
     await installDependencies(dependencies, path);
   },
-
+  /**
+   * Check if package.json exist, uninstall dependencies & Clean node modules
+   * @param {Array<string>} dependencies - Dependencies you want to Uninstall
+   * @param {Path} path - Path to package.json
+   */
   uninstall: async function (dependencies, path) {
     const file = Path.join(path, kPackageJSON);
 
