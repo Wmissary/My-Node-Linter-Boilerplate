@@ -6,18 +6,27 @@ import { spawn } from "node:child_process";
  * @param {Path} path - Path to package.json
  */
 const installDependencies = async (dependencies, path) => {
+  const commandArray = ["install", "--save-dev"];
+
   for (const dependency of dependencies) {
-    const install = spawn(
-      process.platform.startsWith("win") ? "npm.cmd" : "npm",
-      ["install", "--save-dev", dependency],
-      {
-        cwd: path,
-      }
-    );
+    commandArray.push(dependency);
+  }
+
+  const install = spawn(
+    process.platform.startsWith("win") ? "npm.cmd" : "npm",
+    commandArray,
+    {
+      cwd: path,
+    }
+  );
+
+  try {
     await new Promise((resolve, reject) => {
       install.on("error", reject);
       install.on("close", resolve);
     });
+  } catch {
+    throw new Error("Npm install problem");
   }
 };
 
@@ -27,18 +36,25 @@ const installDependencies = async (dependencies, path) => {
  * @param {Path} path - Path to package.json
  */
 const uninstallDependencies = async (dependencies, path) => {
+  const commandArray = ["uninstall", "--save-dev"];
+
   for (const dependency of dependencies) {
-    const uninstall = spawn(
-      process.platform.startsWith("win") ? "npm.cmd" : "npm",
-      ["uninstall", "--save-dev", dependency],
-      {
-        cwd: path,
-      }
-    );
+    commandArray.push(dependency);
+  }
+  const uninstall = spawn(
+    process.platform.startsWith("win") ? "npm.cmd" : "npm",
+    commandArray,
+    {
+      cwd: path,
+    }
+  );
+  try {
     await new Promise((resolve, reject) => {
       uninstall.on("error", reject);
       uninstall.on("close", resolve);
     });
+  } catch {
+    throw new Error("Npm uninstall problem");
   }
 };
 
@@ -54,10 +70,14 @@ const cleanNodeModules = async (path) => {
       cwd: path,
     }
   );
-  await new Promise((resolve, reject) => {
-    clean.on("error", reject);
-    clean.on("close", resolve);
-  });
+  try {
+    await new Promise((resolve, reject) => {
+      clean.on("error", reject);
+      clean.on("close", resolve);
+    });
+  } catch {
+    throw new Error("Cleaning node modules problem");
+  }
 };
 
 export { installDependencies, uninstallDependencies, cleanNodeModules };
