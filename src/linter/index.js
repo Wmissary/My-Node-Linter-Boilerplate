@@ -7,6 +7,10 @@ import {
   uninstallDependencies,
   cleanNodeModules,
 } from "./spawn.js";
+import {
+  addNodeEngineToPackageJson,
+  removeNodeEngineFromPackageJson,
+} from "./engine.js";
 
 const kPackageJSON = "package.json";
 
@@ -25,7 +29,11 @@ export const linter = {
     if ((await fileExist(file)) === false) {
       throw new Error(kErrorMessages.PACKAGEJSON_NOT_FOUND);
     }
-    await installDependencies(dependencies, path);
+
+    await Promise.all([
+      installDependencies(dependencies, path),
+      addNodeEngineToPackageJson(file),
+    ]);
   },
   /**
    * Check if package.json exist, uninstall dependencies & Clean node modules
@@ -39,7 +47,10 @@ export const linter = {
       throw new Error(kErrorMessages.PACKAGEJSON_NOT_FOUND);
     }
 
-    await uninstallDependencies(dependencies, path);
+    await Promise.all([
+      uninstallDependencies(dependencies, path),
+      removeNodeEngineFromPackageJson(file),
+    ]);
     await cleanNodeModules(path);
   },
 };

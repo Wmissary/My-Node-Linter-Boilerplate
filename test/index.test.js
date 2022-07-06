@@ -5,7 +5,7 @@ import * as url from "node:url";
 import Path from "node:path";
 import Fs from "node:fs/promises";
 
-import { linter } from "../src/linter/linter.js";
+import { linter } from "../src/linter/index.js";
 
 test("Should install & uninstall linter and plugins", async (t) => {
   const dependencies = [
@@ -33,21 +33,28 @@ test("Should install & uninstall linter and plugins", async (t) => {
     }
   });
 
-  await t.test("should install linter and plugins", async () => {
-    await linter.install(dependencies, path);
+  await t.test(
+    "should install linter, plugins and add engine to package.json",
+    async () => {
+      await linter.install(dependencies, path);
 
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    const packageData = await Fs.readFile(
-      Path.join(path, "package.json"),
-      "utf8"
-    );
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      const packageData = await Fs.readFile(
+        Path.join(path, "package.json"),
+        "utf8"
+      );
 
-    const packageDataObject = JSON.parse(packageData);
-    assert.deepStrictEqual(
-      Object.keys(packageDataObject.devDependencies),
-      dependencies
-    );
-  });
+      const packageDataObject = JSON.parse(packageData);
+      assert.deepStrictEqual(
+        Object.keys(packageDataObject.devDependencies),
+        dependencies
+      );
+      assert.deepStrictEqual(
+        packageDataObject.engines.node,
+        ">=" + process.versions.node
+      );
+    }
+  );
 
   await t.test("should throw error if package.json is not found", async () => {
     try {
@@ -67,6 +74,7 @@ test("Should install & uninstall linter and plugins", async (t) => {
 
     const packageDataObject = JSON.parse(packageData);
     assert.strictEqual(packageDataObject.devDependencies, undefined);
+    assert.strictEqual(packageDataObject.engines, undefined);
   });
 
   // eslint-disable-next-line security/detect-non-literal-fs-filename

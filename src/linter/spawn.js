@@ -5,7 +5,7 @@ import { spawn } from "node:child_process";
  * @param {Array<String>} dependencies - Dependencies you want to install
  * @param {Path} path - Path to package.json
  */
-export const installDependencies = async (dependencies, path) => {
+const installDependencies = async (dependencies, path) => {
   for (const dependency of dependencies) {
     const install = spawn(
       process.platform.startsWith("win") ? "npm.cmd" : "npm",
@@ -26,7 +26,7 @@ export const installDependencies = async (dependencies, path) => {
  * @param {Array<String>} dependencies - Dependencies you want to uninstall
  * @param {Path} path - Path to package.json
  */
-export const uninstallDependencies = async (dependencies, path) => {
+const uninstallDependencies = async (dependencies, path) => {
   for (const dependency of dependencies) {
     const uninstall = spawn(
       process.platform.startsWith("win") ? "npm.cmd" : "npm",
@@ -46,7 +46,7 @@ export const uninstallDependencies = async (dependencies, path) => {
  * Clean node_modules
  * @param {Path} path - Path to package.json
  */
-export const cleanNodeModules = async (path) => {
+const cleanNodeModules = async (path) => {
   const clean = spawn(
     process.platform.startsWith("win") ? "npm.cmd" : "npm",
     ["prune"],
@@ -59,3 +59,5 @@ export const cleanNodeModules = async (path) => {
     clean.on("close", resolve);
   });
 };
+
+export { installDependencies, uninstallDependencies, cleanNodeModules };
