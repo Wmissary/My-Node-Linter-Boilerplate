@@ -5,7 +5,7 @@ import * as url from "node:url";
 import Path from "node:path";
 import Fs from "node:fs/promises";
 
-import { linter } from "../src/linter.js";
+import { linter } from "../src/linter/linter.js";
 
 test("Should install & uninstall linter and plugins", async (t) => {
   const dependencies = [
