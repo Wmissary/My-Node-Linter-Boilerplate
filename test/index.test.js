@@ -5,7 +5,7 @@ import * as url from "node:url";
 import Path from "node:path";
 import Fs from "node:fs/promises";
 
-import { linter } from "../src/linter/index.js";
+import Linter from "../src/class/linter.js";
 
 test("Should install & uninstall linter and plugins", async (t) => {
   const dependencies = [
@@ -24,9 +24,13 @@ test("Should install & uninstall linter and plugins", async (t) => {
 
   const errorPath = Path.join(dirname);
 
+  const linter = new Linter(dependencies, path);
+
+  const errorLinter = new Linter(dependencies, errorPath);
+
   await t.test("should throw error if package.json is not found", async () => {
     try {
-      await linter.install(dependencies, errorPath);
+      await errorLinter.install();
       assert.strictEqual(1, 2);
     } catch (error) {
       assert.strictEqual(error.message, fileNotFoundError);
@@ -36,7 +40,7 @@ test("Should install & uninstall linter and plugins", async (t) => {
   await t.test(
     "should install linter, plugins and add engine to package.json",
     async () => {
-      await linter.install(dependencies, path);
+      await linter.install();
 
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       const packageData = await Fs.readFile(
@@ -58,14 +62,14 @@ test("Should install & uninstall linter and plugins", async (t) => {
 
   await t.test("should throw error if package.json is not found", async () => {
     try {
-      await linter.uninstall(dependencies, errorPath);
+      await linter.uninstall();
     } catch (error) {
       assert.strictEqual(error.message, fileNotFoundError);
     }
   });
 
   await t.test("should uninstall linter and plugins", async () => {
-    await linter.uninstall(dependencies, path);
+    await linter.uninstall();
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     const packageData = await Fs.readFile(
       Path.join(path, "package.json"),
