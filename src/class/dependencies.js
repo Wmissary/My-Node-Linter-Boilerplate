@@ -29,6 +29,9 @@ export default class Dependencies {
     this.#command = new Command();
   }
 
+  /**
+   * @description install dependencies
+   */
   async install() {
     const command = this.#command.generate(
       kTypeOfCommand.install,
@@ -46,6 +49,9 @@ export default class Dependencies {
     });
   }
 
+  /**
+   * @description uninstall dependencies
+   */
   async uninstall() {
     const command = this.#command.generate(
       kTypeOfCommand.uninstall,
