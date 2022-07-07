@@ -1,9 +1,6 @@
 import { spawn } from "node:child_process";
-
-export const kTypeOfCommand = Object.freeze({
-  install: Symbol("install"),
-  uninstall: Symbol("uninstall"),
-});
+import { kTypeOfCommand } from "../constants.js";
+import { kErrorMessages } from "../errors.js";
 
 export default class Command {
   /**
@@ -50,7 +47,7 @@ export default class Command {
         break;
       }
       default: {
-        throw new Error("Unknown command type: " + type);
+        throw new Error(kErrorMessages.COMMAND_TYPE_UNKNOWN + type);
       }
     }
     generatedCommand += [...dependencies].join(" ");

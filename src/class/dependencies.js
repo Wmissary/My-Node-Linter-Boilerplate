@@ -1,4 +1,6 @@
-import Command, { kTypeOfCommand } from "./command.js";
+import Command from "./command.js";
+import { kTypeOfCommand } from "../constants.js";
+import { kErrorMessages } from "../errors.js";
 
 export default class Dependencies {
   /**
@@ -41,10 +43,12 @@ export default class Dependencies {
 
     await new Promise((resolve, reject) => {
       install.on("error", (error) => {
-        reject(new Error("Error happened: " + error));
+        reject(
+          new Error(kErrorMessages.DEPENDENCIES_INSTALLATION_FAILED + error)
+        );
       });
       install.on("close", () => {
-        resolve(console.log("install complete"));
+        resolve(console.log("Dependencies installation complete"));
       });
     });
   }
@@ -61,7 +65,7 @@ export default class Dependencies {
 
     await new Promise((resolve, reject) => {
       uninstall.on("error", (error) => {
-        reject(new Error("Error happened: " + error));
+        reject(kErrorMessages.DEPENDENCIES_UNINSTALL_FAILED + error);
       });
       uninstall.on("close", () => {
         resolve(console.log("Uninstall complete"));
