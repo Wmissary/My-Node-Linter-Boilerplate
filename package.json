@@ -2,13 +2,19 @@
   "name": "my-node-linter-boilerplate",
   "version": "0.0.1",
   "description": "My-Node-Linter-Boilerplate add my selected linter, plugins and configurations to the project.",
-  "main": "index.js",
+  "main": "bin/index.js",
+  "bin": {
+    "mylinter": "./bin/index.js"
+  },
   "type": "module",
   "scripts": {
     "test": "node --test"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "sade": "^1.8.1"
+  },
   "engines": {
     "node": ">=18.4.0"
   },
