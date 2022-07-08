@@ -31,9 +31,6 @@ export default class Package {
    * @description Get package.json data.
    */
   async #get() {
-    if ((await fileExist(this.#path)) === false) {
-      throw new Error(kErrorMessages.PACKAGEJSON_NOT_FOUND);
-    }
     // eslint-disable-next-line security/detect-non-literal-fs-filename
     return await fs.readFile(this.#path, "utf8");
   }
@@ -56,5 +53,11 @@ export default class Package {
     const packageData = JSON.parse(await this.#get());
     delete packageData.engines;
     await this.#write(JSON.stringify(packageData));
+  }
+
+  async exist() {
+    if ((await fileExist(this.#path)) === false) {
+      throw new Error(kErrorMessages.PACKAGEJSON_NOT_FOUND);
+    }
   }
 }

@@ -22,7 +22,7 @@ test("Should install & uninstall linter and plugins", async (t) => {
 
   const path = Path.join(dirname, "playground");
 
-  const errorPath = Path.join(dirname);
+  const errorPath = dirname;
 
   const linter = new Linter(dependencies, path);
 
@@ -48,21 +48,28 @@ test("Should install & uninstall linter and plugins", async (t) => {
         "utf8"
       );
 
+      /*const configurationData = await Fs.readFile(
+        Path.join(path, ".eslintrc.json"),
+        "utf8"
+      );*/
+
       const packageDataObject = JSON.parse(packageData);
       assert.deepStrictEqual(
         Object.keys(packageDataObject.devDependencies),
         dependencies
       );
-      assert.deepStrictEqual(
+      assert.strictEqual(
         packageDataObject.engines.node,
         ">=" + process.versions.node
       );
+
+      //assert.deepStrictEqual(configurationData);
     }
   );
 
   await t.test("should throw error if package.json is not found", async () => {
     try {
-      await linter.uninstall();
+      await errorLinter.uninstall();
     } catch (error) {
       assert.strictEqual(error.message, fileNotFoundError);
     }

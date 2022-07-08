@@ -26,6 +26,7 @@ export default class Linter {
    * @description install dependencies, add node engine to package.json
    */
   async install() {
+    await this.#packageJson.exist();
     await Promise.all([
       this.#dependencies.install(),
       this.#packageJson.addNodeEngine(),
@@ -36,6 +37,7 @@ export default class Linter {
    * @description uninstall dependencies, remove node engine from package.json
    */
   async uninstall() {
+    await this.#packageJson.exist();
     await Promise.all([
       this.#dependencies.uninstall(),
       this.#packageJson.removeNodeEngine(),
