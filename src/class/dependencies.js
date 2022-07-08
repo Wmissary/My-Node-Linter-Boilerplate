@@ -1,20 +1,8 @@
 import Command from "./command.js";
-import { kTypeOfCommand } from "../constants.js";
+import { kCommandArguments } from "../constants.js";
 import { kErrorMessages } from "../errors.js";
 
 export default class Dependencies {
-  /**
-   * @type {Set<string>}
-   * @description Dependencies to install.
-   */
-  #dependencies;
-
-  /**
-   * @type {Path}
-   * @description Path to the directory containing package.json.
-   */
-  #path;
-
   /**
    * @type {Class}
    * @description Command class init.
@@ -26,20 +14,15 @@ export default class Dependencies {
    * @param {Path} path
    */
   constructor(dependencies, path) {
-    this.#dependencies = dependencies;
-    this.#path = path;
-    this.#command = new Command();
+    this.#command = new Command(dependencies, path);
   }
 
   /**
    * @description install dependencies
    */
   async install() {
-    const command = this.#command.generate(
-      kTypeOfCommand.install,
-      this.#dependencies
-    );
-    const install = this.#command.spawn(command, this.#path);
+    const command = this.#command.generate(kCommandArguments.install);
+    const install = this.#command.run(command);
 
     await new Promise((resolve, reject) => {
       install.on("error", (error) => {
@@ -57,11 +40,8 @@ export default class Dependencies {
    * @description uninstall dependencies
    */
   async uninstall() {
-    const command = this.#command.generate(
-      kTypeOfCommand.uninstall,
-      this.#dependencies
-    );
-    const uninstall = this.#command.spawn(command, this.#path);
+    const command = this.#command.generate(kCommandArguments.uninstall);
+    const uninstall = this.#command.run(command);
 
     await new Promise((resolve, reject) => {
       uninstall.on("error", (error) => {

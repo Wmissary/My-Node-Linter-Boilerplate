@@ -1,4 +1,4 @@
-export const kTypeOfCommand = Object.freeze({
+export const kCommandArguments = Object.freeze({
   install: Symbol("install"),
   uninstall: Symbol("uninstall"),
 });

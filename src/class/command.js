@@ -1,31 +1,49 @@
 import { spawn } from "node:child_process";
-import { kTypeOfCommand } from "../constants.js";
+import { kCommandArguments } from "../constants.js";
 import { kErrorMessages } from "../errors.js";
+
+const kArguments = Object.freeze({
+  INSTALL: 0,
+  UNINSTALL: 1,
+});
 
 export default class Command {
   /**
    * @type {String}
    * @description Cross platform npm command.
    */
-  #baseCommand;
+  #command;
 
   /**
    * @type {Set<string>}
-   * @description Install arguments for npm command.
+   * @description action arguments for npm command.
    */
-  #installArgs;
+  #args;
+
+  /**
+   * @type {String}
+   * @description Option arguments for npm command.
+   */
+  #option;
 
   /**
    * @type {Set<string>}
-   * @description Uninstall arguments for npm command.
+   * @description dependencies arguments for npm command.
    */
-  #uninstallArgs;
-  constructor() {
-    this.#baseCommand = process.platform.startsWith("win")
-      ? "npm.cmd "
-      : "npm ";
-    this.#installArgs = new Set(["install", "--save-dev "]);
-    this.#uninstallArgs = new Set(["uninstall", "--save-dev "]);
+  #dependencies;
+
+  /**
+   * @type {Path}
+   * @description Path.
+   */
+  #path;
+
+  constructor(dependencies, path) {
+    this.#command = process.platform.startsWith("win") ? "npm.cmd" : "npm";
+    this.#args = new Set(["install", "uninstall"]);
+    this.#option = "--save-dev";
+    this.#dependencies = dependencies;
+    this.#path = path;
   }
 
   /**
@@ -34,23 +52,15 @@ export default class Command {
    * @description Generate cross platform npm command to install, uninstall
    * @return {String}
    */
-  generate(type, dependencies) {
-    let generatedCommand = "";
-    generatedCommand += this.#baseCommand;
-    switch (type) {
-      case kTypeOfCommand.install: {
-        generatedCommand += [...this.#installArgs].join(" ");
-        break;
-      }
-      case kTypeOfCommand.uninstall: {
-        generatedCommand += [...this.#uninstallArgs].join(" ");
-        break;
-      }
-      default: {
-        throw new Error(kErrorMessages.COMMAND_TYPE_UNKNOWN + type);
-      }
-    }
-    generatedCommand += [...dependencies].join(" ");
+  generate(type) {
+    let generatedCommand = this.#command + " ";
+    if (type === kCommandArguments.install)
+      generatedCommand += [...this.#args][kArguments.INSTALL] + " ";
+    else if (type === kCommandArguments.uninstall)
+      generatedCommand += [...this.#args][kArguments.UNINSTALL] + " ";
+    else throw new Error(kErrorMessages.COMMAND_TYPE_UNKNOWN + type);
+    generatedCommand += this.#option + " ";
+    generatedCommand += [...this.#dependencies].join(" ");
     return generatedCommand;
   }
 
@@ -60,9 +70,9 @@ export default class Command {
    * @description Execute the npm command
    * @return {String}
    */
-  spawn(command, path) {
+  run(command) {
     return spawn(command, {
-      cwd: path,
+      cwd: this.#path,
       shell: true,
     });
   }

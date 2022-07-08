@@ -3,17 +3,6 @@ import Package from "./package.js";
 
 export default class Linter {
   /**
-   * @type {Set<string>}
-   * @description Set of dependencies to install, uninstall.
-   */
-  #dependenciesToInstall;
-
-  /**
-   * @type {Path}
-   * @description Path to the directory containing package.json.
-   */
-  #path;
-  /**
    * @type {Class}
    * @description Dependencies class init.
    */
@@ -30,20 +19,15 @@ export default class Linter {
    * @param {Path} path
    */
   constructor(dependencies, path) {
-    this.#dependenciesToInstall = dependencies;
-    this.#path = path;
-    this.#dependencies = new Dependencies(
-      this.#dependenciesToInstall,
-      this.#path
-    );
-    this.#packageJson = new Package(this.#path);
+    this.#dependencies = new Dependencies(dependencies, path);
+    this.#packageJson = new Package(path);
   }
   /**
    * @description install dependencies, add node engine to package.json
    */
   async install() {
     await Promise.all([
-      this.#dependencies.install(this.#dependenciesToInstall, this.#path),
+      this.#dependencies.install(),
       this.#packageJson.addNodeEngine(),
     ]);
   }
@@ -53,7 +37,7 @@ export default class Linter {
    */
   async uninstall() {
     await Promise.all([
-      this.#dependencies.uninstall(this.#dependenciesToInstall, this.#path),
+      this.#dependencies.uninstall(),
       this.#packageJson.removeNodeEngine(),
     ]);
   }
