@@ -31,7 +31,7 @@ export default class Linter {
     this.#configuration = new Configuration(path);
   }
   /**
-   * @description install dependencies, add node engine to package.json
+   * @description install dependencies, add node engine to package.json and create configuration file.
    */
   async install() {
     await this.#packageJson.exist();
@@ -43,7 +43,7 @@ export default class Linter {
   }
 
   /**
-   * @description uninstall dependencies, remove node engine from package.json
+   * @description uninstall dependencies, remove node engine from package.json and delete configuration file.
    */
   async uninstall() {
     await this.#packageJson.exist();
