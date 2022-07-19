@@ -36,8 +36,8 @@ Or you can visit our CLI documentation for more information.
 ## Roadmap
 
 - [x] Install & uninstall dependencies logic.
-- [ ] Add configuration file logic.
-- [ ] CLI.
+- [x] Add configuration file logic.
+- [x] CLI.
 - [ ] Documentation.
 - [ ] Optimize test.
 - [ ] Optimize installation logic.
